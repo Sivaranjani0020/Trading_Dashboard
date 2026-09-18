@@ -1,0 +1,2619 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Trading Dashboard</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0f172a;
+            color: #f1f5f9;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ====================================================== */
+
+        .navbar {
+            height: 80px;
+            background: #111827;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            border-bottom: 1px solid #273449;
+        }
+
+        .navbar h1 {
+            margin: 0;
+            font-size: 27px;
+            color: #f8fafc;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            background: #bb2d3b;
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+        ====================================================== */
+
+        .container {
+            width: calc(100% - 70px);
+            margin: 34px auto;
+            max-width: 1650px;
+        }
+
+
+        /* =====================================================
+           TABS
+        ====================================================== */
+
+        .dashboard-tabs {
+            display: flex;
+            border-bottom: 1px solid #334155;
+            margin-bottom: 26px;
+        }
+
+        .dashboard-tab {
+    width: 180px;
+    height: 58px;
+    border: none;
+    background: transparent;
+    color: #cbd5e1;
+    padding: 0;
+    font-size: 17px;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 8px 8px 0 0;
+}
+
+        .dashboard-tab:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        .dashboard-tab.active {
+            background: #2563eb;
+            color: white;
+        }
+
+
+        /* =====================================================
+           PANELS
+        ====================================================== */
+
+        .dashboard-panel {
+            display: none;
+        }
+
+        .dashboard-panel.active {
+            display: block;
+        }
+
+
+        /* =====================================================
+           CARD
+        ====================================================== */
+
+        .card {
+    background: #111827;
+    border: 1px solid #273449;
+    border-radius: 10px;
+    padding: 22px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+}
+
+.card h2 {
+    margin-top: 0;
+    margin-bottom: 22px;
+    font-size: 22px;
+    color: #f8fafc;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+        .field {
+            position: relative;
+        }
+
+        .field label {
+    display: block;
+    margin-bottom: 9px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+        select,
+        input {
+            width: 100%;
+            height: 52px;
+            padding: 0 14px;
+            background: #1e293b;
+            color: #f8fafc;
+            border: 1px solid #475569;
+            border-radius: 7px;
+            font-size: 15px;
+            outline: none;
+        }
+
+        select:focus,
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+        }
+
+        input::placeholder {
+            color: #94a3b8;
+        }
+
+
+        /* =====================================================
+           SEARCH DROPDOWN
+        ====================================================== */
+
+        .custom-dropdown {
+            position: absolute;
+            top: 82px;
+            left: 0;
+            right: 0;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 7px;
+            max-height: 230px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 12px 14px;
+            cursor: pointer;
+            color: #e2e8f0;
+        }
+
+        .dropdown-item:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+
+        /* =====================================================
+           OPTION TYPE / ORDER SIDE / LTP ROW
+        ====================================================== */
+
+        .trade-controls {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+            align-items: end;
+        }
+
+        .side-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .side-btn {
+    flex: 1;
+    height: 46px;
+    background: #1e293b;
+    color: #f8fafc;
+    border: 1px solid #475569;
+    border-radius: 7px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+
+        .side-btn:hover {
+            border-color: #3b82f6;
+        }
+
+        .side-btn.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+        }
+
+
+        /* =====================================================
+           LTP
+        ====================================================== */
+
+        .ltp-box {
+    height: 46px;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #f8fafc;
+}
+        #ltp {
+            margin-left: 5px;
+        }
+
+
+        /* =====================================================
+           ORDER TYPE + LIMIT PRICE
+        ====================================================== */
+
+        .order-type-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-top: 20px;
+    align-items: end;
+}
+
+        .limit-price-field {
+            display: none;
+        }
+
+        .limit-price-field.show {
+            display: block;
+        }
+
+
+        /* =====================================================
+           PLACE ORDER
+        ====================================================== */
+
+        .place-order-row {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 22px;
+        }
+
+        .primary-btn {
+            min-width: 190px;
+            height: 52px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 7px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .primary-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .primary-btn:disabled {
+            background: #475569;
+            cursor: not-allowed;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ====================================================== */
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #1e293b;
+            color: #cbd5e1;
+            text-align: left;
+            padding: 14px;
+            border-bottom: 1px solid #475569;
+            font-size: 14px;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #273449;
+            color: #e2e8f0;
+            font-size: 14px;
+        }
+
+        tr:hover td {
+            background: #172033;
+        }
+
+
+        /* =====================================================
+           POSITION BUTTON
+        ====================================================== */
+
+        .panic-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .panic-btn:hover {
+            background: #bb2d3b;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ====================================================== */
+
+        .status-open {
+            color: #22c55e;
+            font-weight: 600;
+        }
+
+        .status-closed {
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            color: #facc15;
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           EMPTY TABLE
+        ====================================================== */
+
+        .empty-message {
+            text-align: center;
+            padding: 35px;
+            color: #94a3b8;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 1000px) {
+
+            .form-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .trade-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .order-type-row {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 600px) {
+
+            .container {
+                width: calc(100% - 25px);
+            }
+
+            .navbar {
+                padding: 0 18px;
+            }
+
+            .navbar h1 {
+                font-size: 21px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-tab {
+                padding: 14px 15px;
+                font-size: 14px;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+====================================================== -->
+
+<div class="navbar">
+
+    <h1>
+        Trading Dashboard
+    </h1>
+
+    <button
+        class="logout-btn"
+        onclick="window.location.href='/logout'"
+    >
+        Logout
+    </button>
+
+</div>
+
+
+
+<div class="container">
+
+
+    <!-- =====================================================
+         DASHBOARD TABS
+    ====================================================== -->
+
+    <div class="dashboard-tabs">
+
+        <button
+            class="dashboard-tab active"
+            onclick="showDashboardTab('instrumentTab', this)"
+        >
+            Instrument Selection
+        </button>
+
+        <button
+            class="dashboard-tab"
+            onclick="showDashboardTab('orderBookTab', this)"
+        >
+            Order Book
+        </button>
+
+        <button
+            class="dashboard-tab"
+            onclick="showDashboardTab('positionsTab', this)"
+        >
+            Positions
+        </button>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         INSTRUMENT SELECTION
+    ====================================================== -->
+
+    <div
+        id="instrumentTab"
+        class="dashboard-panel active"
+    >
+
+        <div class="card">
+
+            <h2>
+                Instrument Selection
+            </h2>
+
+
+            <!-- =================================================
+                 INSTRUMENT DETAILS
+            ================================================== -->
+
+            <div class="form-grid">
+
+
+                <!-- INSTRUMENT TYPE -->
+
+                <div class="field">
+
+                    <label>
+                        Instrument Type
+                    </label>
+
+                    <select
+                        id="instrumentType"
+                        onchange="instrumentTypeChanged()"
+                    >
+
+                        <option value="OPTIONS">
+                            Options
+                        </option>
+
+                        <option value="EQUITY">
+                            Equity
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- SEARCH SYMBOL -->
+
+                <div class="field">
+
+                    <label>
+                        Search Symbol
+                    </label>
+
+                    <input
+                        type="text"
+                        id="symbolSearch"
+                        placeholder="Search symbol..."
+                        autocomplete="off"
+                        oninput="searchSymbols()"
+                        onclick="searchSymbols()"
+                    >
+
+                    <div
+                        id="symbolDropdown"
+                        class="custom-dropdown"
+                    ></div>
+
+                </div>
+
+
+
+                <!-- EXPIRY -->
+
+                <div
+                    class="field"
+                    id="expiryField"
+                >
+
+                    <label>
+                        Expiry
+                    </label>
+
+                    <select
+                        id="expiry"
+                        onchange="expiryChanged()"
+                    >
+
+                        <option value="">
+                            Select Expiry
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- STRIKE -->
+
+                <div
+                    class="field"
+                    id="strikeField"
+                >
+
+                    <label>
+                        Strike
+                    </label>
+
+                    <input
+                        type="text"
+                        id="strike"
+                        placeholder="Search strike..."
+                        autocomplete="off"
+                        oninput="searchStrikes()"
+                        onclick="searchStrikes()"
+                    >
+
+                    <div
+                        id="strikeDropdown"
+                        class="custom-dropdown"
+                    ></div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+                 OPTION TYPE
+                 + ORDER SIDE
+                 + LTP
+            ================================================== -->
+
+            <div class="trade-controls">
+
+
+                <!-- OPTION TYPE -->
+
+                <div
+                    class="field"
+                    id="optionTypeField"
+                >
+
+                    <label>
+                        Option Type
+                    </label>
+
+                    <div class="side-buttons">
+
+                        <button
+                            type="button"
+                            class="side-btn active"
+                            id="ceBtn"
+                            onclick="selectOptionType('CE')"
+                        >
+                            CE
+                        </button>
+
+                        <button
+                            type="button"
+                            class="side-btn"
+                            id="peBtn"
+                            onclick="selectOptionType('PE')"
+                        >
+                            PE
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ORDER SIDE -->
+
+                <div class="field">
+
+                    <label>
+                        Order Side
+                    </label>
+
+                    <div class="side-buttons">
+
+                        <button
+                            type="button"
+                            class="side-btn active"
+                            id="buyBtn"
+                            onclick="selectSide('BUY')"
+                        >
+                            BUY
+                        </button>
+
+                        <button
+                            type="button"
+                            class="side-btn"
+                            id="sellBtn"
+                            onclick="selectSide('SELL')"
+                        >
+                            SELL
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- LTP -->
+
+                <div class="field">
+
+                    <label>
+                        LTP
+                    </label>
+
+                    <div class="ltp-box">
+
+                        LTP:
+
+                        <span id="ltp">
+                            --
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================================
+     ORDER TYPE + PRODUCT TYPE + LIMIT PRICE
+================================================== -->
+
+<div class="order-type-row">
+
+
+    <!-- ORDER TYPE -->
+
+    <div class="field">
+
+        <label>
+            Order Type
+        </label>
+
+        <select
+            id="orderType"
+            onchange="selectOrderType(this.value)"
+        >
+
+            <option value="LIMIT" selected>
+                LIMIT
+            </option>
+
+            <option value="MARKET">
+                MARKET
+            </option>
+
+        </select>
+
+    </div>
+
+
+
+    <!-- PRODUCT TYPE -->
+
+    <div class="field">
+
+        <label>
+            Product Type
+        </label>
+
+        <select
+            id="productType"
+            onchange="selectProductType(this.value)"
+        >
+
+            <option value="NRML" selected>
+                NRML
+            </option>
+
+            <option value="MIS">
+                MIS
+            </option>
+
+        </select>
+
+    </div>
+
+
+
+    <!-- LIMIT PRICE -->
+
+    <div
+        class="field limit-price-field show"
+        id="limitPriceField"
+    >
+
+        <label>
+            Limit Price
+        </label>
+
+        <input
+            type="number"
+            id="limitPrice"
+            step="0.05"
+            min="0"
+            placeholder="Enter limit price"
+        >
+
+    </div>
+
+</div>
+
+            <!-- =================================================
+                 PLACE ORDER
+            ================================================== -->
+
+            <div class="place-order-row">
+
+                <button
+                    type="button"
+                    class="primary-btn"
+                    id="placeOrderBtn"
+                    onclick="placeOrder()"
+                >
+                    Place Order
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         ORDER BOOK
+    ====================================================== -->
+
+    <div
+        id="orderBookTab"
+        class="dashboard-panel"
+    >
+
+        <div class="card">
+
+            <h2>
+                Order Book
+            </h2>
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Client
+                            </th>
+
+                            <th>
+                                Symbol
+                            </th>
+
+                            <th>
+                                Side
+                            </th>
+
+                            <th>
+                                Order Type
+                            </th>
+
+                            <th>
+                                Quantity
+                            </th>
+
+                            <th>
+                                Price
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                            <th>
+                                Time
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="orderBookBody">
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="empty-message"
+                            >
+                                No orders yet
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         POSITIONS
+    ====================================================== -->
+
+    <div
+        id="positionsTab"
+        class="dashboard-panel"
+    >
+
+        <div class="card">
+
+            <h2>
+                Positions
+            </h2>
+
+
+            <div
+                style="
+                    display:flex;
+                    justify-content:flex-end;
+                    margin-bottom:18px;
+                "
+            >
+
+                <button
+                    class="panic-btn"
+                    onclick="panicSquareOff()"
+                >
+                    Panic Sq. Off
+                </button>
+
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Select
+                            </th>
+
+                            <th>
+                                Client
+                            </th>
+
+                            <th>
+                                Symbol
+                            </th>
+
+                            <th>
+                                Side
+                            </th>
+
+                            <th>
+                                Quantity
+                            </th>
+
+                            <th>
+                                Entry Price
+                            </th>
+
+                            <th>
+                                LTP
+                            </th>
+
+                            <th>
+                                P&L
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="positionsBody">
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                class="empty-message"
+                            >
+                                No open positions
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+/* =========================================================
+   GLOBAL VARIABLES
+========================================================= */
+
+let selectedOptionType = "CE";
+
+let selectedSide = "BUY";
+
+let selectedOrderType = "LIMIT";
+
+let selectedProductType = "NRML";
+
+let selectedContract = null;
+
+let selectedSymbol = "";
+
+let strikeResults = [];
+
+let symbolSearchTimer = null;
+
+
+
+/* =========================================================
+   DASHBOARD TABS
+========================================================= */
+
+function showDashboardTab(tabId, button) {
+
+    document
+        .querySelectorAll(".dashboard-panel")
+        .forEach(panel => {
+
+            panel.classList.remove("active");
+
+        });
+
+
+    document
+        .querySelectorAll(".dashboard-tab")
+        .forEach(tab => {
+
+            tab.classList.remove("active");
+
+        });
+
+
+    document
+        .getElementById(tabId)
+        .classList.add("active");
+
+
+    button.classList.add("active");
+
+}
+
+
+
+/* =========================================================
+   INSTRUMENT TYPE
+========================================================= */
+
+function instrumentTypeChanged() {
+
+    const type =
+        document.getElementById("instrumentType").value;
+
+
+    document.getElementById("symbolSearch").value = "";
+
+    document.getElementById("expiry").innerHTML =
+        '<option value="">Select Expiry</option>';
+
+    document.getElementById("strike").value = "";
+
+    document.getElementById("ltp").innerText = "--";
+
+
+    selectedSymbol = "";
+
+    selectedContract = null;
+
+    strikeResults = [];
+
+
+    if (type === "OPTIONS") {
+
+        document.getElementById("expiryField").style.display =
+            "block";
+
+        document.getElementById("strikeField").style.display =
+            "block";
+
+        document.getElementById("optionTypeField").style.display =
+            "block";
+
+    }
+
+    else {
+
+        document.getElementById("expiryField").style.display =
+            "none";
+
+        document.getElementById("strikeField").style.display =
+            "none";
+
+        document.getElementById("optionTypeField").style.display =
+            "none";
+
+    }
+
+
+    searchSymbols();
+
+}
+
+
+
+/* =========================================================
+   SYMBOL SEARCH
+========================================================= */
+
+function searchSymbols() {
+
+    clearTimeout(symbolSearchTimer);
+
+
+    symbolSearchTimer = setTimeout(async () => {
+
+        const type =
+            document.getElementById("instrumentType").value;
+
+        const search =
+            document
+                .getElementById("symbolSearch")
+                .value
+                .trim();
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `/api/symbols?instrument_type=${encodeURIComponent(type)}&search=${encodeURIComponent(search)}`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error("Symbol API failed");
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            renderSymbolDropdown(
+                data.symbols || []
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Symbol search error:",
+                error
+            );
+
+        }
+
+    }, 200);
+
+}
+
+
+
+/* =========================================================
+   SYMBOL DROPDOWN
+========================================================= */
+
+function renderSymbolDropdown(symbols) {
+
+    const dropdown =
+        document.getElementById("symbolDropdown");
+
+
+    dropdown.innerHTML = "";
+
+
+    if (!symbols.length) {
+
+        dropdown.style.display = "none";
+
+        return;
+
+    }
+
+
+    symbols.forEach(symbol => {
+
+        const item =
+            document.createElement("div");
+
+
+        item.className =
+            "dropdown-item";
+
+
+        item.innerText =
+            symbol;
+
+
+        item.onclick = function () {
+
+            selectSymbol(symbol);
+
+        };
+
+
+        dropdown.appendChild(item);
+
+    });
+
+
+    dropdown.style.display = "block";
+
+}
+
+
+
+/* =========================================================
+   SELECT SYMBOL
+========================================================= */
+
+function selectSymbol(symbol) {
+
+    selectedSymbol = symbol;
+
+
+    document.getElementById("symbolSearch").value =
+        symbol;
+
+
+    document.getElementById("symbolDropdown").style.display =
+        "none";
+
+
+    const type =
+        document.getElementById("instrumentType").value;
+
+
+    if (type === "OPTIONS") {
+
+        loadExpiries();
+
+    }
+
+    else {
+
+        loadEquityContract();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   LOAD EXPIRIES
+========================================================= */
+
+async function loadExpiries() {
+
+    if (!selectedSymbol) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/expiries?symbol=${encodeURIComponent(selectedSymbol)}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        const expiry =
+            document.getElementById("expiry");
+
+
+        expiry.innerHTML =
+            '<option value="">Select Expiry</option>';
+
+
+        (data.expiries || []).forEach(item => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = item;
+
+            option.textContent = item;
+
+            expiry.appendChild(option);
+
+        });
+
+
+        if (data.expiries && data.expiries.length) {
+
+            expiry.value =
+                data.expiries[0];
+
+            await expiryChanged();
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Expiry loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   EXPIRY CHANGED
+========================================================= */
+
+async function expiryChanged() {
+
+    const expiry =
+        document.getElementById("expiry").value;
+
+
+    if (!selectedSymbol || !expiry) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/strikes?symbol=${encodeURIComponent(selectedSymbol)}&expiry=${encodeURIComponent(expiry)}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        strikeResults =
+            data.strikes || [];
+
+
+        document.getElementById("strike").value = "";
+
+        document.getElementById("strikeDropdown").style.display =
+            "none";
+
+
+        selectedContract = null;
+
+        document.getElementById("ltp").innerText = "--";
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Strike loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   SEARCH STRIKES
+========================================================= */
+
+function searchStrikes() {
+
+    const search =
+        document
+            .getElementById("strike")
+            .value
+            .trim();
+
+
+    const dropdown =
+        document.getElementById("strikeDropdown");
+
+
+    dropdown.innerHTML = "";
+
+
+    const filtered =
+        strikeResults.filter(strike =>
+            String(strike)
+                .startsWith(search)
+        );
+
+
+    if (!filtered.length) {
+
+        dropdown.style.display = "none";
+
+        return;
+
+    }
+
+
+    filtered.slice(0, 50).forEach(strike => {
+
+        const item =
+            document.createElement("div");
+
+
+        item.className =
+            "dropdown-item";
+
+
+        item.innerText =
+            strike;
+
+
+        item.onclick = function () {
+
+            selectStrike(strike);
+
+        };
+
+
+        dropdown.appendChild(item);
+
+    });
+
+
+    dropdown.style.display = "block";
+
+}
+
+
+
+/* =========================================================
+   SELECT STRIKE
+========================================================= */
+
+function selectStrike(strike) {
+
+    document.getElementById("strike").value =
+        strike;
+
+
+    document.getElementById("strikeDropdown").style.display =
+        "none";
+
+
+    loadOptionContract();
+
+}
+
+
+
+/* =========================================================
+   OPTION TYPE
+========================================================= */
+
+function selectOptionType(type) {
+
+    selectedOptionType = type;
+
+
+    document
+        .getElementById("ceBtn")
+        .classList.toggle(
+            "active",
+            type === "CE"
+        );
+
+
+    document
+        .getElementById("peBtn")
+        .classList.toggle(
+            "active",
+            type === "PE"
+        );
+
+
+    loadOptionContract();
+
+}
+
+
+
+/* =========================================================
+   ORDER SIDE
+========================================================= */
+
+function selectSide(side) {
+
+    selectedSide = side;
+
+
+    document
+        .getElementById("buyBtn")
+        .classList.toggle(
+            "active",
+            side === "BUY"
+        );
+
+
+    document
+        .getElementById("sellBtn")
+        .classList.toggle(
+            "active",
+            side === "SELL"
+        );
+
+}
+
+
+
+/* =========================================================
+   ORDER TYPE
+========================================================= */
+
+function selectOrderType(type) {
+
+    selectedOrderType = type;
+
+
+    const orderType =
+        document.getElementById("orderType");
+
+    orderType.value = type;
+
+
+    const limitField =
+        document.getElementById("limitPriceField");
+
+
+    if (type === "LIMIT") {
+
+        limitField.classList.add("show");
+
+
+        const ltp =
+            parseFloat(
+                document.getElementById("ltp").innerText
+            );
+
+
+        if (!isNaN(ltp)) {
+
+            document.getElementById("limitPrice").value =
+                ltp.toFixed(2);
+
+            document.getElementById("limitPrice").dataset.auto =
+                "true";
+
+        }
+
+    }
+
+    else {
+
+        limitField.classList.remove("show");
+
+        document.getElementById("limitPrice").value = "";
+
+        document.getElementById("limitPrice").dataset.auto =
+            "false";
+
+    }
+
+}
+
+/* =========================================================
+   PRODUCT TYPE
+========================================================= */
+
+/* =========================================================
+   PRODUCT TYPE
+========================================================= */
+
+function selectProductType(type) {
+
+    selectedProductType = type;
+
+    document.getElementById("productType").value = type;
+
+}
+
+/* =========================================================
+   LOAD OPTION CONTRACT
+========================================================= */
+
+async function loadOptionContract() {
+
+    const expiry =
+        document.getElementById("expiry").value;
+
+
+    const strike =
+        document.getElementById("strike").value;
+
+
+    if (
+        !selectedSymbol ||
+        !expiry ||
+        !strike
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/contract?symbol=${encodeURIComponent(selectedSymbol)}&expiry=${encodeURIComponent(expiry)}&strike=${encodeURIComponent(strike)}&option_type=${encodeURIComponent(selectedOptionType)}`
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok || !data.contract) {
+
+            selectedContract = null;
+
+            document.getElementById("ltp").innerText =
+                "--";
+
+            return;
+
+        }
+
+
+        selectedContract =
+            data.contract;
+
+
+        startLtpUpdates();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Contract loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   EQUITY CONTRACT
+========================================================= */
+
+async function loadEquityContract() {
+
+    if (!selectedSymbol) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+    `/api/contract?instrument_type=EQUITY&symbol=${encodeURIComponent(selectedSymbol)}`
+)
+
+        const data =
+            await response.json();
+
+        if (!response.ok || !data.contract) {
+
+            selectedContract = null;
+
+            document.getElementById("ltp").innerText = "--";
+
+            return;
+        }
+
+        selectedContract =
+            data.contract;
+
+        startLtpUpdates();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Equity contract error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   LTP
+========================================================= */
+
+let ltpInterval = null;
+
+
+function startLtpUpdates() {
+
+    if (ltpInterval) {
+
+        clearInterval(ltpInterval);
+
+    }
+
+
+    updateLtp();
+
+
+    ltpInterval =
+        setInterval(
+            updateLtp,
+            1000
+        );
+
+}
+
+
+
+async function updateLtp() {
+
+    if (!selectedContract) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/api/ltp?exchange_segment=${encodeURIComponent(selectedContract.exchange_segment)}&instrument_id=${encodeURIComponent(selectedContract.instrument_id)}`
+            );
+
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        if (
+            data.ltp !== undefined &&
+            data.ltp !== null
+        ) {
+
+            const ltp =
+                parseFloat(data.ltp);
+
+
+            document.getElementById("ltp").innerText =
+                isNaN(ltp)
+                    ? "--"
+                    : ltp.toFixed(2);
+
+
+            if (
+                selectedOrderType === "LIMIT" &&
+                document.activeElement !==
+                document.getElementById("limitPrice")
+            ) {
+
+                const limitPrice =
+                    document.getElementById("limitPrice");
+
+
+                if (
+                    limitPrice.value === "" ||
+                    limitPrice.dataset.auto === "true"
+                ) {
+
+                    limitPrice.value =
+                        ltp.toFixed(2);
+
+                    limitPrice.dataset.auto =
+                        "true";
+
+                }
+
+            }
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "LTP error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   LIMIT PRICE MANUAL CHANGE
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+        const limitPrice =
+            document.getElementById("limitPrice");
+
+
+        limitPrice.addEventListener(
+            "input",
+            function () {
+
+                limitPrice.dataset.auto =
+                    "false";
+
+            }
+        );
+
+    }
+);
+
+
+
+/* =========================================================
+   PLACE ORDER
+========================================================= */
+
+async function placeOrder() {
+
+    if (!selectedContract) {
+
+        alert(
+            "Please select a valid instrument."
+        );
+
+        return;
+
+    }
+
+
+    let limitPrice = null;
+
+
+    if (selectedOrderType === "LIMIT") {
+
+        const value =
+            document
+                .getElementById("limitPrice")
+                .value
+                .trim();
+
+
+        if (!value) {
+
+            alert(
+                "Please enter a limit price."
+            );
+
+            return;
+
+        }
+
+
+        limitPrice =
+            parseFloat(value);
+
+
+        if (
+            isNaN(limitPrice) ||
+            limitPrice <= 0
+        ) {
+
+            alert(
+                "Please enter a valid limit price."
+            );
+
+            return;
+
+        }
+
+    }
+
+
+    const placeButton =
+        document.getElementById(
+            "placeOrderBtn"
+        );
+
+
+    placeButton.disabled = true;
+
+    placeButton.innerText =
+        "Placing...";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/place-order",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+    instrument:
+        selectedContract,
+
+    side:
+        selectedSide,
+
+    order_type:
+        selectedOrderType,
+
+    limit_price:
+        limitPrice,
+
+    product_type:
+    selectedProductType
+
+})
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Order placement failed"
+            );
+
+        }
+
+
+        alert(
+            data.message ||
+            "Order placed successfully."
+        );
+
+
+        loadOrderBook();
+
+        loadPositions();
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Place order error:",
+            error
+        );
+
+
+        alert(
+            error.message ||
+            "Order placement failed."
+        );
+
+    }
+
+    finally {
+
+        placeButton.disabled = false;
+
+        placeButton.innerText =
+            "Place Order";
+
+    }
+
+}
+
+
+
+/* =========================================================
+   ORDER BOOK
+========================================================= */
+
+async function loadOrderBook() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/orderbook"
+            );
+
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const orders =
+            data.orders || [];
+
+
+        const body =
+            document.getElementById(
+                "orderBookBody"
+            );
+
+
+        body.innerHTML = "";
+
+
+        if (!orders.length) {
+
+            body.innerHTML = `
+                <tr>
+                    <td
+                        colspan="8"
+                        class="empty-message"
+                    >
+                        No orders yet
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        orders.forEach(order => {
+
+            const row =
+                document.createElement("tr");
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${order.client_id || "-"}
+                </td>
+
+                <td>
+                    ${order.symbol || "-"}
+                </td>
+
+                <td>
+                    ${order.side || "-"}
+                </td>
+
+                <td>
+                    ${order.order_type || "-"}
+                </td>
+
+                <td>
+                    ${order.quantity || "-"}
+                </td>
+
+                <td>
+                    ${order.average_price ||
+                      order.limit_price ||
+                      "-"}
+                </td>
+
+                <td class="${getStatusClass(order.status)}">
+                    ${order.status || "-"}
+                </td>
+
+                <td>
+                    ${order.timestamp ||
+                      order.time ||
+                      "-"}
+                </td>
+
+            `;
+
+
+            body.appendChild(row);
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Order book error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   POSITIONS
+========================================================= */
+
+async function loadPositions() {
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/positions"
+            );
+
+
+        if (!response.ok) {
+
+            return;
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        const positions =
+            data.positions || [];
+
+
+        const body =
+            document.getElementById(
+                "positionsBody"
+            );
+
+
+        // Remember currently selected positions
+        const selectedPositions =
+            new Set(
+                Array.from(
+                    document.querySelectorAll(
+                        ".position-checkbox:checked"
+                    )
+                ).map(
+                    checkbox =>
+                        `${checkbox.dataset.clientId}|${checkbox.value}`
+                )
+            );
+
+
+        body.innerHTML = "";
+
+
+        if (!positions.length) {
+
+            body.innerHTML = `
+                <tr>
+                    <td
+                        colspan="9"
+                        class="empty-message"
+                    >
+                        No open positions
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        positions.forEach(position => {
+
+            const row =
+                document.createElement("tr");
+
+
+            const clientId =
+                position.client_id || "";
+
+
+            const appOrderId =
+                position.app_order_id || "";
+
+
+            const positionKey =
+                `${clientId}|${appOrderId}`;
+
+
+            const isSelected =
+                selectedPositions.has(
+                    positionKey
+                );
+
+
+            row.innerHTML = `
+
+                <td>
+
+                    <input
+                        type="checkbox"
+                        class="position-checkbox"
+                        data-client-id="${clientId}"
+                        value="${appOrderId}"
+                        ${isSelected ? "checked" : ""}
+                        style="
+                            width:18px;
+                            height:18px;
+                        "
+                    >
+
+                </td>
+
+                <td>
+                    ${position.client_id || "-"}
+                </td>
+
+                <td>
+                    ${position.symbol || "-"}
+                </td>
+
+                <td>
+                    ${position.side || "-"}
+                </td>
+
+                <td>
+                    ${position.quantity || "-"}
+                </td>
+
+                <td>
+                    ${position.entry_price || "-"}
+                </td>
+
+                <td>
+                    ${position.ltp || "-"}
+                </td>
+
+                <td>
+                    ${position.pnl || "0"}
+                </td>
+
+                <td class="${getStatusClass(position.status)}">
+                    ${position.status || "-"}
+                </td>
+
+            `;
+
+
+            body.appendChild(row);
+
+        });
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Positions error:",
+            error
+        );
+
+    }
+
+}
+
+
+
+/* =========================================================
+   STATUS CLASS
+========================================================= */
+
+function getStatusClass(status) {
+
+    if (!status) {
+
+        return "";
+
+    }
+
+
+    const value =
+        String(status).toLowerCase();
+
+
+    if (
+        value === "filled" ||
+        value === "open"
+    ) {
+
+        return "status-open";
+
+    }
+
+
+    if (
+        value === "closed" ||
+        value === "cancelled"
+    ) {
+
+        return "status-closed";
+
+    }
+
+
+    return "status-pending";
+
+}
+
+
+
+/* =========================================================
+   PANIC SQUARE OFF
+========================================================= */
+
+async function panicSquareOff() {
+
+    const checkboxes =
+        document.querySelectorAll(
+            ".position-checkbox:checked"
+        );
+
+    if (!checkboxes.length) {
+
+        alert(
+            "Please select at least one position."
+        );
+
+        return;
+    }
+
+    const selectedPositions =
+        Array.from(checkboxes).map(
+            checkbox => ({
+                client_id: checkbox.dataset.clientId,
+                app_order_id: checkbox.value
+            })
+        );
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to square off the selected positions?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/panic-squareoff",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        positions:
+                            selectedPositions
+                    })
+                }
+            );
+
+        const data =
+            await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Square-off failed"
+            );
+        }
+
+        alert(
+            data.message ||
+            "Square-off order placed."
+        );
+
+        loadPositions();
+        loadOrderBook();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Panic square-off error:",
+            error
+        );
+
+        alert(
+            error.message ||
+            "Square-off failed."
+        );
+    }
+}
+
+
+/* =========================================================
+   OUTSIDE CLICK - CLOSE DROPDOWNS
+========================================================= */
+
+document.addEventListener(
+    "click",
+    function(event) {
+
+        const symbolInput =
+            document.getElementById(
+                "symbolSearch"
+            );
+
+        const symbolDropdown =
+            document.getElementById(
+                "symbolDropdown"
+            );
+
+
+        const strikeInput =
+            document.getElementById(
+                "strike"
+            );
+
+        const strikeDropdown =
+            document.getElementById(
+                "strikeDropdown"
+            );
+
+
+        if (
+            !symbolInput.contains(event.target) &&
+            !symbolDropdown.contains(event.target)
+        ) {
+
+            symbolDropdown.style.display =
+                "none";
+
+        }
+
+
+        if (
+            !strikeInput.contains(event.target) &&
+            !strikeDropdown.contains(event.target)
+        ) {
+
+            strikeDropdown.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+
+
+/* =========================================================
+   INITIAL LOAD
+========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        instrumentTypeChanged();
+
+selectOrderType("LIMIT");
+
+selectProductType("NRML");
+
+loadOrderBook();
+
+        loadPositions();
+
+
+        setInterval(
+            loadOrderBook,
+            2000
+        );
+
+
+        setInterval(
+            loadPositions,
+            2000
+        );
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>

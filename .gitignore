@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+.venv/
+
+# SQLite database - contains client credentials
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment / secrets
+.env
+.env.*
+
+# IDE
+.idea/
+
+# Logs
+*.log
+
+# Generated master data
+# Generated master data
+master_data.csv
+master_date.txt
+nse_master.csv

@@ -1,0 +1,1522 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Call Automation</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+
+
+    <style>
+
+        /* =====================================================
+           GENERAL
+        ===================================================== */
+
+        body {
+            background: #121212;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 0;
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar {
+            background: #0f172a !important;
+        }
+
+        .navbar-brand {
+            color: #ffffff !important;
+        }
+
+        .nav-link {
+            color: #cbd5e1 !important;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: #ffffff !important;
+        }
+
+        .logout-link {
+            color: #fca5a5 !important;
+        }
+
+
+        /* =====================================================
+           MAIN CONTAINER
+        ===================================================== */
+
+        .container-main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 15px;
+        }
+
+
+        /* =====================================================
+           TABS
+        ===================================================== */
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+
+        /* =====================================================
+           CARDS
+        ===================================================== */
+
+        .card {
+            background: #1e1e1e;
+            color: #e0e0e0;
+            border: 1px solid #2d2d2d;
+        }
+
+        .card-header {
+            background: #0f172a !important;
+            color: #f8fafc !important;
+            border-bottom: 1px solid #2d2d2d;
+            font-size: 20px;
+        }
+
+        .management-section {
+            margin-bottom: 25px;
+        }
+
+
+        /* =====================================================
+           TABLE
+        ===================================================== */
+
+        .table {
+            background: #1e1e1e !important;
+            color: #f8fafc !important;
+        }
+
+        .table thead th {
+            background: #0f172a !important;
+            color: #f8fafc !important;
+            border: none;
+        }
+
+        .table tbody td {
+            color: #f8fafc !important;
+            border-color: #2d2d2d !important;
+            vertical-align: middle;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            background-color: #1a1a1a !important;
+        }
+
+        .table-striped > tbody > tr:nth-of-type(even) > * {
+            background-color: #222222 !important;
+        }
+
+        .table-hover tbody tr:hover > * {
+            background: #2d2d2d !important;
+        }
+
+
+        /* =====================================================
+           FORM INPUTS
+        ===================================================== */
+
+        .form-control {
+            background: #2a2a2a;
+            color: #ffffff;
+            border: 1px solid #444;
+        }
+
+        .form-control:focus {
+            background: #2a2a2a;
+            color: #ffffff;
+            border-color: #777;
+            box-shadow: none;
+        }
+
+        .form-control::placeholder {
+            color: #999;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .btn-success {
+            background: #166534;
+            border-color: #166534;
+        }
+
+        .btn-success:hover {
+            background: #14532d;
+            border-color: #14532d;
+        }
+
+        .btn-danger {
+            background: #991b1b;
+            border-color: #991b1b;
+        }
+
+        .btn-danger:hover {
+            background: #7f1d1d;
+            border-color: #7f1d1d;
+        }
+
+        .btn-primary {
+            background: #1d4ed8;
+            border-color: #1d4ed8;
+        }
+
+        .btn-primary:hover {
+            background: #1e40af;
+            border-color: #1e40af;
+        }
+
+
+        /* =====================================================
+           SECTION TITLE
+        ===================================================== */
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+
+        /* =====================================================
+           UPDATE CLIENT
+        ===================================================== */
+
+        #update-client-fields {
+            margin-top: 20px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+
+    <div class="container-fluid">
+
+        <a class="navbar-brand fw-bold">
+            Call Automation
+        </a>
+
+
+        <div class="collapse navbar-collapse">
+
+            <ul class="navbar-nav ms-auto">
+
+
+                <!-- CLIENT LIST -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link active tab-link"
+                       href="#"
+                       data-tab="client-list">
+
+                        Client List
+
+                    </a>
+
+                </li>
+
+
+                <!-- MANAGE CLIENTS -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link tab-link"
+                       href="#"
+                       data-tab="manage-clients">
+
+                        Manage Clients
+
+                    </a>
+
+                </li>
+
+
+                <!-- LOGOUT -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link logout-link"
+                       href="/logout">
+
+                        Logout
+
+                    </a>
+
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+<div class="container-main">
+
+
+<!-- =========================================================
+     CLIENT LIST TAB
+========================================================= -->
+
+<div id="client-list"
+     class="tab-pane active">
+
+
+    <div class="card shadow">
+
+
+        <div class="card-header">
+
+            Client List
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <!-- SELECT ALL -->
+
+            <div class="form-check mb-3">
+
+                <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="select-all">
+
+                <label
+                    class="form-check-label fw-bold"
+                    for="select-all">
+
+                    Select All Clients
+
+                </label>
+
+            </div>
+
+
+            <!-- CLIENT TABLE -->
+
+            <table class="table table-striped table-hover">
+
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        Client ID
+                    </th>
+
+                    <th>
+                        Enable
+                    </th>
+
+                    <th style="width:150px;">
+                        Lots
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for client in clients %}
+
+                <tr>
+
+
+                    <td>
+                        {{ client.client_id }}
+                    </td>
+
+
+                    <td>
+
+                        <input
+                            type="checkbox"
+                            class="client-toggle"
+                            data-client="{{ client.client_id }}"
+
+                            {% if client.client_id in enabled_set %}
+                                checked
+                            {% endif %}
+                        >
+
+                    </td>
+
+
+                    <td>
+
+                        <input
+                            type="number"
+                            min="1"
+                            step="1"
+                            class="form-control lot-input"
+                            data-client="{{ client.client_id }}"
+                            value="{{ client.lots if client.lots else 1 }}"
+                        >
+
+                    </td>
+
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+
+            </table>
+
+
+            <!-- LOGIN -->
+
+            <form method="post"
+                  action="/login">
+
+                <button
+                    type="submit"
+                    class="btn btn-success w-100 mt-3">
+
+                    Login Enabled Clients
+
+                </button>
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<!-- =========================================================
+     MANAGE CLIENTS TAB
+========================================================= -->
+
+<div id="manage-clients"
+     class="tab-pane">
+
+
+    <!-- =====================================================
+         ADD CLIENT
+    ====================================================== -->
+
+    <div class="card shadow management-section">
+
+
+        <div class="card-header">
+
+            Add Client
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <form method="post"
+                  action="/add-client">
+
+
+                <div class="row g-3">
+
+
+                    <!-- CLIENT ID -->
+
+                    <div class="col-md-4">
+
+                        <input
+                            type="text"
+                            name="client_id"
+                            class="form-control"
+                            placeholder="Client ID"
+                            required>
+
+                    </div>
+
+
+                    <!-- INTERACTIVE API KEY -->
+
+                    <div class="col-md-4">
+
+                        <input
+                            type="text"
+                            name="interactive_api_key"
+                            class="form-control"
+                            placeholder="Interactive API Key"
+                            required>
+
+                    </div>
+
+
+                    <!-- INTERACTIVE API SECRET -->
+
+                    <div class="col-md-4">
+
+                        <input
+                            type="password"
+                            name="interactive_api_secret"
+                            class="form-control"
+                            placeholder="Interactive API Secret"
+                            required>
+
+                    </div>
+
+
+                    <!-- MARKET API KEY -->
+
+                    <div class="col-md-4">
+
+                        <input
+                            type="text"
+                            name="market_api_key"
+                            class="form-control"
+                            placeholder="Market API Key"
+                            required>
+
+                    </div>
+
+
+                    <!-- MARKET API SECRET -->
+
+                    <div class="col-md-4">
+
+                        <input
+                            type="password"
+                            name="market_api_secret"
+                            class="form-control"
+                            placeholder="Market API Secret"
+                            required>
+
+                    </div>
+
+
+                    <!-- LOTS -->
+
+                    <div class="col-md-4">
+
+                        <input
+                            type="number"
+                            name="lots"
+                            class="form-control"
+                            placeholder="Lots"
+                            value="1"
+                            min="1"
+                            required>
+
+                    </div>
+
+
+                    <!-- STATIC IP USERNAME -->
+
+                    <div class="col-md-3">
+
+                        <input
+                            type="text"
+                            name="static_ip_username"
+                            class="form-control"
+                            placeholder="Static IP Username">
+
+                    </div>
+
+
+                    <!-- STATIC IP PASSWORD -->
+
+                    <div class="col-md-3">
+
+                        <input
+                            type="password"
+                            name="static_ip_password"
+                            class="form-control"
+                            placeholder="Static IP Password">
+
+                    </div>
+
+
+                    <!-- STATIC IP HOST -->
+
+                    <div class="col-md-3">
+
+                        <input
+                            type="text"
+                            name="static_ip_host"
+                            class="form-control"
+                            placeholder="Static IP Host">
+
+                    </div>
+
+
+                    <!-- STATIC IP PORT -->
+
+                    <div class="col-md-3">
+
+                        <input
+                            type="number"
+                            name="static_ip_port"
+                            class="form-control"
+                            placeholder="Static IP Port">
+
+                    </div>
+
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-success w-100 mt-4">
+
+                    Add Client
+
+                </button>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         UPDATE CLIENT
+    ====================================================== -->
+
+    <div class="card shadow management-section">
+
+
+        <div class="card-header">
+
+            Update Client Credentials
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <!-- SELECT CLIENT -->
+
+            <div class="mb-3">
+
+                <label
+                    class="form-label">
+
+                    Select Client
+
+                </label>
+
+
+                <select
+                    id="update-client-select"
+                    class="form-control">
+
+
+                    <option value="">
+
+                        Select Client
+
+                    </option>
+
+
+                    {% for client in clients %}
+
+                    <option value="{{ client.client_id }}">
+
+                        {{ client.client_id }}
+
+                    </option>
+
+                    {% endfor %}
+
+
+                </select>
+
+            </div>
+
+
+            <!-- =================================================
+                 HIDDEN UNTIL CLIENT IS SELECTED
+            ================================================== -->
+
+            <div id="update-client-fields"
+                 style="display: none;">
+
+
+                <form method="post"
+                      action="/update-client">
+
+
+                    <!-- CLIENT ID -->
+
+                    <input
+                        type="hidden"
+                        name="client_id"
+                        id="update-client-id">
+
+
+                    <div class="row g-3">
+
+
+                        <!-- INTERACTIVE API KEY -->
+
+                        <div class="col-md-6">
+
+                            <input
+                                type="text"
+                                name="interactive_api_key"
+                                id="update-interactive-api-key"
+                                class="form-control"
+                                placeholder="Interactive API Key"
+                                required>
+
+                        </div>
+
+
+                        <!-- INTERACTIVE API SECRET -->
+
+                        <div class="col-md-6">
+
+                            <input
+                                type="text"
+                                name="interactive_api_secret"
+                                id="update-interactive-api-secret"
+                                class="form-control"
+                                placeholder="Interactive API Secret"
+                                required>
+
+                        </div>
+
+
+                        <!-- MARKET API KEY -->
+
+                        <div class="col-md-6">
+
+                            <input
+                                type="text"
+                                name="market_api_key"
+                                id="update-market-api-key"
+                                class="form-control"
+                                placeholder="Market API Key"
+                                required>
+
+                        </div>
+
+
+                        <!-- MARKET API SECRET -->
+
+                        <div class="col-md-6">
+
+                            <input
+                                type="text"
+                                name="market_api_secret"
+                                id="update-market-api-secret"
+                                class="form-control"
+                                placeholder="Market API Secret"
+                                required>
+
+                        </div>
+
+
+                        <!-- STATIC IP USERNAME -->
+
+                        <div class="col-md-3">
+
+                            <input
+                                type="text"
+                                name="static_ip_username"
+                                id="update-static-ip-username"
+                                class="form-control"
+                                placeholder="Static IP Username">
+
+                        </div>
+
+
+                        <!-- STATIC IP PASSWORD -->
+
+                        <div class="col-md-3">
+
+                            <input
+                                type="text"
+                                name="static_ip_password"
+                                id="update-static-ip-password"
+                                class="form-control"
+                                placeholder="Static IP Password">
+
+                        </div>
+
+
+                        <!-- STATIC IP HOST -->
+
+                        <div class="col-md-3">
+
+                            <input
+                                type="text"
+                                name="static_ip_host"
+                                id="update-static-ip-host"
+                                class="form-control"
+                                placeholder="Static IP Host">
+
+                        </div>
+
+
+                        <!-- STATIC IP PORT -->
+
+                        <div class="col-md-3">
+
+                            <input
+                                type="number"
+                                name="static_ip_port"
+                                id="update-static-ip-port"
+                                class="form-control"
+                                placeholder="Static IP Port">
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- UPDATE BUTTON -->
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary w-100 mt-4">
+
+                        Update Client Credentials
+
+                    </button>
+
+
+                </form>
+
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         DELETE CLIENT
+    ====================================================== -->
+
+    <div class="card shadow management-section">
+
+
+        <div class="card-header">
+
+            Delete Client
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <form method="post"
+                  action="/delete-client"
+                  class="row g-3">
+
+
+                <div class="col-md-10">
+
+
+                    <select
+                        name="client_id"
+                        class="form-control"
+                        required>
+
+
+                        <option value="">
+
+                            Select Client
+
+                        </option>
+
+
+                        {% for client in clients %}
+
+                        <option value="{{ client.client_id }}">
+
+                            {{ client.client_id }}
+
+                        </option>
+
+                        {% endfor %}
+
+
+                    </select>
+
+
+                </div>
+
+
+                <div class="col-md-2">
+
+
+                    <button
+                        type="submit"
+                        class="btn btn-danger w-100"
+                        onclick="return confirm('Delete this client?');">
+
+                        Delete
+
+                    </button>
+
+
+                </div>
+
+
+            </form>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ADMIN MANAGEMENT
+    ====================================================== -->
+
+    <div class="card shadow management-section">
+
+
+        <div class="card-header">
+
+            Admin Management
+
+        </div>
+
+
+        <div class="card-body">
+
+
+            <!-- ADD ADMIN -->
+
+            <form method="post"
+                  action="/add-admin"
+                  class="row g-3 mb-4">
+
+
+                <div class="col-md-5">
+
+                    <input
+                        type="text"
+                        name="userid"
+                        class="form-control"
+                        placeholder="Admin User ID"
+                        required>
+
+                </div>
+
+
+                <div class="col-md-5">
+
+                    <input
+                        type="password"
+                        name="password"
+                        class="form-control"
+                        placeholder="Password"
+                        required>
+
+                </div>
+
+
+                <div class="col-md-2">
+
+                    <button
+                        type="submit"
+                        class="btn btn-success w-100">
+
+                        Add Admin
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+
+            <!-- EXISTING ADMINS -->
+
+            <div class="section-title">
+
+                Existing Admins
+
+            </div>
+
+
+            <table class="table table-striped">
+
+
+                <thead>
+
+                <tr>
+
+                    <th>
+                        Admin User ID
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                {% for admin in admins %}
+
+                <tr>
+
+
+                    <td>
+
+                        {{ admin.userid }}
+
+                    </td>
+
+
+                    <td>
+
+
+                        <form method="post"
+                              action="/delete-admin"
+                              style="display:inline;">
+
+
+                            <input
+                                type="hidden"
+                                name="userid"
+                                value="{{ admin.userid }}">
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Delete this admin?');">
+
+                                Delete
+
+                            </button>
+
+
+                        </form>
+
+
+                    </td>
+
+
+                </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+
+/* ============================================================
+   TAB SWITCHING
+============================================================ */
+
+document.querySelectorAll(".tab-link")
+    .forEach(function(link) {
+
+        link.addEventListener("click", function(event) {
+
+            event.preventDefault();
+
+
+            const selectedTab =
+                this.dataset.tab;
+
+
+            /*
+             * Hide every tab
+             */
+
+            document.querySelectorAll(".tab-pane")
+                .forEach(function(tab) {
+
+                    tab.classList.remove("active");
+
+                });
+
+
+            /*
+             * Remove active from navbar links
+             */
+
+            document.querySelectorAll(".tab-link")
+                .forEach(function(navLink) {
+
+                    navLink.classList.remove("active");
+
+                });
+
+
+            /*
+             * Show selected tab
+             */
+
+            document
+                .getElementById(selectedTab)
+                .classList.add("active");
+
+
+            /*
+             * Highlight selected navbar item
+             */
+
+            this.classList.add("active");
+
+        });
+
+    });
+
+
+
+/* ============================================================
+   CLIENT ENABLE / DISABLE
+============================================================ */
+
+document.querySelectorAll(".client-toggle")
+    .forEach(function(checkbox) {
+
+        checkbox.addEventListener(
+            "change",
+            function() {
+
+                fetch(
+                    "/toggle_client",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/x-www-form-urlencoded"
+                        },
+
+                        body:
+                            "client_id=" +
+                            encodeURIComponent(
+                                this.dataset.client
+                            ) +
+                            "&enabled=" +
+                            this.checked
+                    }
+                );
+
+            }
+        );
+
+    });
+
+
+
+/* ============================================================
+   SELECT ALL CLIENTS
+============================================================ */
+
+document.getElementById("select-all")
+    .addEventListener(
+        "change",
+        function() {
+
+            const checked =
+                this.checked;
+
+
+            document.querySelectorAll(
+                ".client-toggle"
+            )
+            .forEach(function(checkbox) {
+
+                checkbox.checked =
+                    checked;
+
+
+                fetch(
+                    "/toggle_client",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/x-www-form-urlencoded"
+                        },
+
+                        body:
+                            "client_id=" +
+                            encodeURIComponent(
+                                checkbox.dataset.client
+                            ) +
+                            "&enabled=" +
+                            checked
+                    }
+                );
+
+            });
+
+        }
+    );
+
+
+
+/* ============================================================
+   LOTS
+============================================================ */
+
+document.querySelectorAll(".lot-input")
+    .forEach(function(input) {
+
+        input.addEventListener(
+            "change",
+            function() {
+
+                let lots =
+                    parseInt(
+                        this.value
+                    );
+
+
+                if (
+                    isNaN(lots) ||
+                    lots < 1
+                ) {
+
+                    lots = 1;
+
+                    this.value = 1;
+
+                }
+
+
+                fetch(
+                    "/update_lots",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/x-www-form-urlencoded"
+                        },
+
+                        body:
+                            "client_id=" +
+                            encodeURIComponent(
+                                this.dataset.client
+                            ) +
+                            "&lots=" +
+                            lots
+                    }
+                );
+
+            }
+        );
+
+    });
+
+
+
+/* ============================================================
+   UPDATE CLIENT
+   LOAD EXISTING CREDENTIALS
+============================================================ */
+
+const updateClientSelect =
+    document.getElementById(
+        "update-client-select"
+    );
+
+
+const updateClientFields =
+    document.getElementById(
+        "update-client-fields"
+    );
+
+
+
+updateClientSelect.addEventListener(
+    "change",
+    async function() {
+
+        const clientId =
+            this.value;
+
+
+        /* ----------------------------------------------------
+           No client selected
+        ---------------------------------------------------- */
+
+        if (!clientId) {
+
+            clearUpdateFields();
+
+            updateClientFields.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        /* ----------------------------------------------------
+           Client selected
+        ---------------------------------------------------- */
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/client-credentials?client_id=" +
+                    encodeURIComponent(clientId)
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok || !data.success) {
+
+                updateClientFields.style.display =
+                    "none";
+
+                alert(
+                    data.error ||
+                    "Unable to load client credentials"
+                );
+
+                return;
+
+            }
+
+
+            const c =
+                data.credentials;
+
+
+            /* ------------------------------------------------
+               Fill existing credentials
+            ------------------------------------------------ */
+
+            document.getElementById(
+                "update-client-id"
+            ).value =
+                c.client_id || "";
+
+
+            document.getElementById(
+                "update-interactive-api-key"
+            ).value =
+                c.interactive_api_key || "";
+
+
+            document.getElementById(
+                "update-interactive-api-secret"
+            ).value =
+                c.interactive_api_secret || "";
+
+
+            document.getElementById(
+                "update-market-api-key"
+            ).value =
+                c.market_api_key || "";
+
+
+            document.getElementById(
+                "update-market-api-secret"
+            ).value =
+                c.market_api_secret || "";
+
+
+            document.getElementById(
+                "update-static-ip-username"
+            ).value =
+                c.static_ip_username || "";
+
+
+            document.getElementById(
+                "update-static-ip-password"
+            ).value =
+                c.static_ip_password || "";
+
+
+            document.getElementById(
+                "update-static-ip-host"
+            ).value =
+                c.static_ip_host || "";
+
+
+            document.getElementById(
+                "update-static-ip-port"
+            ).value =
+                c.static_ip_port || "";
+
+
+            /* ------------------------------------------------
+               Show fields only after successful load
+            ------------------------------------------------ */
+
+            updateClientFields.style.display =
+                "block";
+
+        }
+
+
+        catch (error) {
+
+            console.error(
+                "Credential load error:",
+                error
+            );
+
+
+            updateClientFields.style.display =
+                "none";
+
+
+            alert(
+                "Failed to load client credentials"
+            );
+
+        }
+
+    });
+
+
+
+/* ============================================================
+   CLEAR UPDATE CLIENT FIELDS
+============================================================ */
+
+function clearUpdateFields() {
+
+    document.getElementById(
+        "update-client-id"
+    ).value = "";
+
+
+    document.getElementById(
+        "update-interactive-api-key"
+    ).value = "";
+
+
+    document.getElementById(
+        "update-interactive-api-secret"
+    ).value = "";
+
+
+    document.getElementById(
+        "update-market-api-key"
+    ).value = "";
+
+
+    document.getElementById(
+        "update-market-api-secret"
+    ).value = "";
+
+
+    document.getElementById(
+        "update-static-ip-username"
+    ).value = "";
+
+
+    document.getElementById(
+        "update-static-ip-password"
+    ).value = "";
+
+
+    document.getElementById(
+        "update-static-ip-host"
+    ).value = "";
+
+
+    document.getElementById(
+        "update-static-ip-port"
+    ).value = "";
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>

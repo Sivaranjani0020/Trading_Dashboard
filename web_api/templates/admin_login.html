@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Login - Copy Trading</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+
+            background: #0f172a;
+            color: #e5e7eb;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            min-height: 100vh;
+        }
+
+        .login-container {
+            width: 380px;
+
+            background: #1e293b;
+
+            padding: 35px;
+
+            border-radius: 12px;
+
+            border: 1px solid #334155;
+
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        h2 {
+            text-align: center;
+
+            margin-top: 0;
+            margin-bottom: 30px;
+
+            color: #f8fafc;
+
+            font-size: 24px;
+        }
+
+        label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            font-weight: bold;
+
+            color: #cbd5e1;
+        }
+
+        input {
+            width: 100%;
+
+            padding: 12px;
+
+            margin-bottom: 18px;
+
+            background: #0f172a;
+
+            color: #f8fafc;
+
+            border: 1px solid #475569;
+
+            border-radius: 6px;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+        }
+
+        input::placeholder {
+            color: #64748b;
+        }
+
+        button {
+            width: 100%;
+
+            padding: 12px;
+
+            background: #2563eb;
+
+            color: white;
+
+            border: none;
+
+            border-radius: 6px;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+
+            transition: background 0.2s ease;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .error {
+            color: #f87171;
+
+            background: #450a0a;
+
+            border: 1px solid #7f1d1d;
+
+            padding: 10px;
+
+            border-radius: 6px;
+
+            text-align: center;
+
+            margin-bottom: 18px;
+
+            font-size: 14px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <div class="login-container">
+
+        <h2>Copy Trading Admin Login</h2>
+
+        {% if error %}
+            <div class="error">
+                {{ error }}
+            </div>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('admin_login') }}">
+
+            <label for="userid">User ID</label>
+
+            <input
+                type="text"
+                id="userid"
+                name="userid"
+                placeholder="Enter User ID"
+                required
+            >
+
+            <label for="password">Password</label>
+
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Enter Password"
+                required
+            >
+
+            <button type="submit">
+                Login
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+</html>
